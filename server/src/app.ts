@@ -8,7 +8,7 @@ const port = 4000;
 
 app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(await getMovies()));
+  res.end(JSON.stringify(await getMovies({ query: "pulp", page: 1 })));
 });
 
 app.listen(port, () => {

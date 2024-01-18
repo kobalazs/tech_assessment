@@ -1,8 +1,20 @@
 import fetch from "node-fetch";
+import { SearchMovieRequest, SearchMovieResponse } from "@models";
 
-export const getMovies = async () => {
-  const url =
-    "https://api.themoviedb.org/3/search/movie?query=pulp&include_adult=false&language=en-US&page=1";
+const getQuery = (request: SearchMovieRequest) => {
+  const params: Record<string, string> = {};
+  Object.keys(request).forEach((key) => {
+    if (request[key] !== undefined) {
+      params[key] = `${request[key]}`;
+    }
+  });
+  return new URLSearchParams(params).toString();
+};
+
+export const getMovies: (
+  request: SearchMovieRequest
+) => Promise<SearchMovieResponse> = async (request) => {
+  const url = `https://api.themoviedb.org/3/search/movie?${getQuery(request)}`;
   const options = {
     method: "GET",
     headers: {
@@ -11,5 +23,5 @@ export const getMovies = async () => {
     },
   };
   const res = await fetch(url, options);
-  return res.json();
+  return res.json() as Promise<SearchMovieResponse>;
 };
