@@ -1,15 +1,17 @@
 import express from "express";
 import env from "dotenv";
-import { SearchMovieRequest } from "../../models/search-movie-request.js";
+import { TMDBRequest } from "../../models/tmdb-request.js";
 import { CacheService } from "./cache.service.js";
 import { TmdbService } from "./tmdb.service.js";
+import { CacheRecord } from "../../models/cache-record.js";
+import { ApiResponse } from "../../models/api-response.js";
 
 env.config();
 const app = express();
 const port = 4000;
 const cache = new CacheService();
 
-const getQuery = (request: SearchMovieRequest) => {
+const getQuery = (request: TMDBRequest) => {
   const params: Record<string, string> = {};
   Object.keys(request).forEach((key) => {
     if (request[key] !== undefined) {
@@ -19,22 +21,28 @@ const getQuery = (request: SearchMovieRequest) => {
   return new URLSearchParams(params).toString();
 };
 
+const getResponse = async (query: string) => {
+  let cacheRecord = await cache.get(query);
+  if (cacheRecord?.hadAccessOverMinutes(2)) {
+    cacheRecord.hitCount++;
+    return new ApiResponse("cache", cacheRecord.response);
+  }
+  cacheRecord = new CacheRecord(
+    query,
+    await new TmdbService().getMovies(query)
+  );
+  cache.set(cacheRecord);
+  return new ApiResponse("tmdb", cacheRecord.response);
+};
+
 app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   try {
     const query = getQuery({ query: "pulp", page: 1 });
-    let response = await cache.get(query);
-    if (!response) {
-      response = await new TmdbService().getMovies(query);
-      console.log("From API");
-      cache.set(query, response);
-    } else {
-      console.log("From cache");
-    }
-
-    res.end(JSON.stringify(response));
+    res.end(JSON.stringify(await getResponse(query)));
   } catch (error) {
+    res.status(500).end("Server error");
     console.error(error);
   }
 });

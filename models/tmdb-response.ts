@@ -1,6 +1,6 @@
-import { Movie } from "./movie";
+import { Movie } from "./movie.js";
 
-export class SearchMovieResponse {
+export class TMDBResponse {
   "page": number;
   "results": Array<Movie>;
   "total_pages": number;

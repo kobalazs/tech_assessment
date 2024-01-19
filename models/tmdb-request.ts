@@ -1,4 +1,4 @@
-export class SearchMovieRequest {
+export class TMDBRequest {
   query: string;
   include_adult?: boolean;
   language?: string;

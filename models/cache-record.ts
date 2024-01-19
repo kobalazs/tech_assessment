@@ -1,14 +1,14 @@
-import { SearchMovieResponse } from "./search-movie-response";
+import { TMDBResponse } from "./tmdb-response.js";
 
-export class CacheRow {
+export class CacheRecord {
   public query: string;
-  public response: SearchMovieResponse;
+  public response: TMDBResponse;
   public hitCount?: number;
   public lastAccess?: Date;
 
   public constructor(
     query: string,
-    response: SearchMovieResponse,
+    response: TMDBResponse,
     hitCount?: number,
     lastAccess?: Date
   ) {
@@ -16,6 +16,13 @@ export class CacheRow {
     this.response = response;
     this.hitCount = hitCount;
     this.lastAccess = lastAccess;
+  }
+
+  public hadAccessOverMinutes(thresholdMinutes: number): boolean {
+    return (
+      this.lastAccess === undefined ||
+      this.lastAccess.getTime() <= Date.now() - thresholdMinutes * 60 * 1000
+    );
   }
 
   public serialize(): Array<string | number | undefined> {
@@ -28,9 +35,9 @@ export class CacheRow {
   }
 
   public static from(
-    row: CacheRow & { response: string; lastAccess: string }
-  ): CacheRow {
-    return new CacheRow(
+    row: CacheRecord & { response: string; lastAccess: string }
+  ): CacheRecord {
+    return new CacheRecord(
       row.query,
       JSON.parse(row.response),
       row.hitCount,

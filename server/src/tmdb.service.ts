@@ -1,8 +1,8 @@
 import fetch from "node-fetch";
-import { SearchMovieResponse } from "../../models/index.js";
+import { TMDBResponse } from "../../models/index.js";
 
 export class TmdbService {
-  public async getMovies(query: string): Promise<SearchMovieResponse> {
+  public async getMovies(query: string): Promise<TMDBResponse> {
     const url = `https://api.themoviedb.org/3/search/movie?${query}`;
     const options = {
       method: "GET",
@@ -12,6 +12,6 @@ export class TmdbService {
       },
     };
     const res = await fetch(url, options);
-    return res.json() as Promise<SearchMovieResponse>;
+    return res.json() as Promise<TMDBResponse>;
   }
 }
