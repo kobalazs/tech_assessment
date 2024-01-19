@@ -5,8 +5,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist",
-    "paths": { "@models": ["../models"] }
+    "outDir": "dist"
   },
   "lib": ["esnext"],
   "ts-node": {
