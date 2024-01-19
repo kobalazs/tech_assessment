@@ -1,5 +1,6 @@
 import express from "express";
 import env from "dotenv";
+import cors from "cors";
 import { TMDBRequest } from "../../models/tmdb-request.js";
 import { CacheService } from "./cache.service.js";
 import { TmdbService } from "./tmdb.service.js";
@@ -34,6 +35,8 @@ const getResponse = async (query: string) => {
   cache.set(cacheRecord);
   return new ApiResponse("tmdb", cacheRecord.response);
 };
+
+app.use(cors());
 
 app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "application/json");
