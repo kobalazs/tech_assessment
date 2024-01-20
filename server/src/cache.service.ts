@@ -9,7 +9,7 @@ export class CacheService {
   public constructor() {
     this._db = new sqlite3.Database(":memory:");
     this._db.run(
-      "CREATE TABLE IF NOT EXISTS search_events (query TEXT, response TEXT, hitCount INTEGER DEFAULT 0, lastAccess DATETIME DEFAULT CURRENT_TIMESTAMP)"
+      "CREATE TABLE IF NOT EXISTS search_events (query TEXT PRIMARY KEY ON CONFLICT REPLACE, response TEXT, hitCount INTEGER DEFAULT 0, lastAccess TIMESTAMP)"
     );
   }
 

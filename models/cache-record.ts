@@ -18,10 +18,10 @@ export class CacheRecord {
     this.lastAccess = lastAccess;
   }
 
-  public hadAccessOverMinutes(thresholdMinutes: number): boolean {
+  public hadAccessWithinMinutes(thresholdMinutes: number): boolean {
     return (
       this.lastAccess === undefined ||
-      this.lastAccess.getTime() <= Date.now() - thresholdMinutes * 60 * 1000
+      this.lastAccess.getTime() > Date.now() - thresholdMinutes * 60 * 1000
     );
   }
 
@@ -30,7 +30,7 @@ export class CacheRecord {
       this.query,
       JSON.stringify(this.response),
       this.hitCount,
-      this.lastAccess?.toISOString(),
+      new Date().toISOString(),
     ];
   }
 

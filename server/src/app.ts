@@ -24,16 +24,21 @@ const getHttpQuery = (request: TMDBRequest) => {
 
 const getResponse = async (query: string) => {
   let cacheRecord = await cache.get(query);
-  if (cacheRecord?.hadAccessOverMinutes(2)) {
-    cacheRecord.hitCount++;
-    return new ApiResponse("cache", cacheRecord.response);
+  const source = cacheRecord?.hadAccessWithinMinutes(2) ? "cache" : "tmdb";
+  switch (source) {
+    case "cache":
+      cacheRecord.hitCount++;
+      break;
+    case "tmdb":
+      cacheRecord = new CacheRecord(
+        query,
+        await new TmdbService().getMovies(query)
+      );
+      break;
   }
-  cacheRecord = new CacheRecord(
-    query,
-    await new TmdbService().getMovies(query)
-  );
   cache.set(cacheRecord);
-  return new ApiResponse("tmdb", cacheRecord.response);
+
+  return new ApiResponse(source, cacheRecord.response);
 };
 
 app.use(cors());
