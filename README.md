@@ -1,4 +1,44 @@
-# Description:
+# Tech assessment: Movies
+
+## Installation guide
+
+### Requirements
+
+1. Node.js v20.11.0 or later
+2. npm version 10.2.4 or later
+
+### Download source code
+
+```
+git clone git@github.com:kobalazs/tech_assessment.git
+cd tech_assessment
+```
+
+### Install & start server
+
+```
+cd server
+echo 'TMDB_ACCESS_TOKEN=<your_access_token>' > .env
+npm i
+npm start
+```
+
+API is served at http://localhost:4000/. Query parameters are the same as the TMDB API, for example: http://localhost:4000/?query=star+wars&page=1
+
+### Install & start client
+
+```
+cd client
+npm i
+npm start
+```
+
+Client is served at http://localhost:3000/
+
+## Specification
+
+### Description
+
 The task is to create a UI (whether it a backend or frontend rendered page) which has an input box and a search button.
 
 Upon entering 3 or more characters or clicking on the search button, it queries movies using the value of the input, using the backend you build.
@@ -11,41 +51,47 @@ query is not in its cache.
 In case of Ruby, some backend code stub already prepared in [lib/movies_client.rb](./lib/movies_client.rb) for the project.
 While building the application, integrate this file in your solution and implement the core logic in it.
 
-# Requirements
-- The backend is implemented in Typescript, runtime is Node.js. Alternatively, Ruby-developer roles require Ruby as a backend. 
+### Requirements
+
+- The backend is implemented in Typescript, runtime is Node.js. Alternatively, Ruby-developer roles require Ruby as a backend.
 - Any datastore can be used (flat file, SQL, No-SQL, etc)
 - Access to the ["The Movie Database - registration required"](https://developers.themoviedb.org/3/search/search-movies)
 - In case of FE/Fullstack candidate - use React for the Front end.
 
 When you have finished your work, upload the code to any code hosting site (Bitbucket, Github, Gitlab, etc) and provide us with link.
+
 - making it public will help the assessment.
 
 Simpler is better! Focus on the problem add additional features only, if you sure it is a good fit.
 
-# High level workflow:
+### High level workflow:
 
-## Sending Requests:
+#### Sending Requests:
+
 The UI (from the browser) sends request to the backend.
 
 ![Request Architecture](./architecture.png)
 
-## Processing the request:
+#### Processing the request:
+
 The query consist the search term and optionally the current page.
 
 The backend checks if the same query has received within 2 mins and the results are already saved in its datastore?
 
-  1. If not, it forwards the request to 3rd party API:
-    - Fetch movies matching the query: The API is ["The Movie Database - registration required"](https://developers.themoviedb.org/3/search/search-movies).
-    - Save the search and its results in a datastore:
-      - Results returned by The Movie Database API
-      - Set cache hit count to 0
+1. If not, it forwards the request to 3rd party API:
+
+   - Fetch movies matching the query: The API is ["The Movie Database - registration required"](https://developers.themoviedb.org/3/search/search-movies).
+   - Save the search and its results in a datastore:
+     - Results returned by The Movie Database API
+     - Set cache hit count to 0
 
 Note: For the first not cached render the counter should stay 0
 
-  2. If yes:
-    If the same keyword(s) are looked up within 2 mins:
-    - Serve directly by the backend, no API request should be sent to the 3rd party API.
-    - Record cache hit count should be incremented by 1
+2. If yes:
+   If the same keyword(s) are looked up within 2 mins:
+
+   - Serve directly by the backend, no API request should be sent to the 3rd party API.
+   - Record cache hit count should be incremented by 1
 
 Note: The counter is very important the necessary server resources will be calculated based on it.
 
@@ -53,14 +99,16 @@ Display results
 
 Indicate to the user on the UI, whether results are fetched from our server or from the 3rd party API (display a small notice somewhere on the screen)
 
-## Pagination
+#### Pagination
+
 The results should be paginated if more than 20 items returned by the query, otherwise pagination elements should not displayed.
 
-## UI mockup
+#### UI mockup
 
 ![Mockup](./tech_assessment_mockup.png)
 
-# Bonus
+### Bonus
+
 - Give user feedback what's happening (progress indicators)
 - Handle errors between our and the remote API service (eg: the server cannot access the 3rd party API, because of network issues)
 - Write tests
