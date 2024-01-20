@@ -42,7 +42,7 @@ export default function Page() {
   };
 
   return (
-    <Space direction="vertical" size="middle" style={{ display: 'flex', margin: 'auto', width: '80%', minWidth: 800 }}>
+    <Space direction="vertical" size="middle" style={{ display: 'flex', margin: '0 auto 50px', width: '80%', minWidth: 800 }}>
       <Title level={1}>Movies</Title>
       <form onSubmit={submit}>
         <Flex gap={20}>
@@ -56,7 +56,14 @@ export default function Page() {
           <MovieCard movie={movie} key={movie.id} />
         ))}
       </Flex>
-      {response && <Pagination current={response?.page} total={response?.total_results} onChange={paginate} pageSize={20} showSizeChanger={false} />}
+      <Pagination
+        current={response?.page}
+        total={response?.total_results}
+        onChange={paginate}
+        pageSize={20}
+        showSizeChanger={false}
+        hideOnSinglePage={true}
+      />
     </Space>
   )
 }
