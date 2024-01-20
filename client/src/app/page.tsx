@@ -1,7 +1,7 @@
 'use client';
 
 import { Alert, Button, Flex, Input, Pagination, Space } from 'antd';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { MovieService } from './movie.service';
 import { ApiRequest, ApiResponse } from '../../../models';
 import MovieCard from './movie-card';
@@ -12,6 +12,7 @@ const movieService = new MovieService();
 export default function Page() {
   const [request, setRequest] = useState<ApiRequest | undefined>(undefined);
   const [response, setResponse] = useState<ApiResponse | undefined>(undefined);
+  let debounceTimeout: number | undefined;
 
   useEffect(() => {
     async function search() {
@@ -20,6 +21,14 @@ export default function Page() {
     }
     search();
   }, [request]);
+
+  const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
+    const value = (e.target as HTMLInputElement)['value'];
+    if (value.length >= 3) {
+      clearTimeout(debounceTimeout);
+      debounceTimeout = window.setTimeout(() => setRequest({ query: value, page: 1 }), 500);
+    }
+  }
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +46,7 @@ export default function Page() {
       <Title level={1}>Movies</Title>
       <form onSubmit={submit}>
         <Flex gap={20}>
-          <Input placeholder="Search input" name="query" />
+          <Input placeholder="Search input" name="query" onKeyUp={handleKeyUp} />
           <Button type="primary" htmlType="submit">Search</Button>
         </Flex>
       </form>
