@@ -16,7 +16,6 @@ export class MovieService {
   public async search(request: ApiRequest): Promise<ApiResponse | undefined> {
     try {
       const url = `http://localhost:4000?${this._getHttpQuery(request)}`;
-      console.log(url);
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
