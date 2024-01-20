@@ -33,7 +33,7 @@ export default function Page() {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    setRequest(Object.fromEntries(formData.entries()) as unknown as ApiRequest);
+    setRequest({ ...Object.fromEntries(formData.entries()) as unknown as ApiRequest, page: 1 });
   };
 
   const paginate = (page: number) => {
