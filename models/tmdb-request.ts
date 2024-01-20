@@ -1,5 +1,5 @@
 export class TMDBRequest {
-  query: string;
+  query!: string;
   include_adult?: boolean;
   language?: string;
   primary_release_year?: string;

@@ -12,7 +12,7 @@ const app = express();
 const port = 4000;
 const cache = new CacheService();
 
-const getQuery = (request: TMDBRequest) => {
+const getHttpQuery = (request: TMDBRequest) => {
   const params: Record<string, string> = {};
   Object.keys(request).forEach((key) => {
     if (request[key] !== undefined) {
@@ -42,7 +42,7 @@ app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   try {
-    const query = getQuery({ query: "pulp", page: 1 });
+    const query = getHttpQuery(req.query as unknown as TMDBRequest);
     res.end(JSON.stringify(await getResponse(query)));
   } catch (error) {
     res.status(500).end("Server error");

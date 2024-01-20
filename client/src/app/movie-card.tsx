@@ -1,18 +1,22 @@
-'use client';
 
 import { Card } from 'antd';
 import { Movie } from '../../../models';
-import Paragraph from 'antd/es/typography/Paragraph';
-import Title from 'antd/es/typography/Title';
+import Meta from 'antd/es/card/Meta';
 
 export default function MovieCard({ movie }: { movie: Movie }) {
+    function getImageSrc(): string {
+        if (movie.poster_path) {
+            return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+        }
+        return `https://placehold.co/500x400?text=${encodeURIComponent(movie.title)}`
+    }
+
     return (
         <Card
             style={{ height: 500, width: '23%', overflow: 'hidden' }}
-            cover={<img src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} style={{ minHeight: 250 }} />}
+            cover={<img src={getImageSrc()} alt={movie.title} style={{ height: 200, width: '100%', objectFit: 'cover' }} />}
         >
-            <Title level={3}>{movie.title}</Title>
-            <Paragraph>{movie.overview}</Paragraph>
+            <Meta title={movie.title} description={movie.overview} />
         </Card>
     );
 }
