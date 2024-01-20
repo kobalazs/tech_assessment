@@ -13,7 +13,7 @@ export default function MovieCard({ movie }: { movie: Movie }) {
 
     return (
         <Card
-            style={{ height: 500, width: '23%', overflow: 'hidden' }}
+            style={{ height: 400, width: '23%', overflow: 'hidden' }}
             cover={<img src={getImageSrc()} alt={movie.title} style={{ height: 200, width: '100%', objectFit: 'cover' }} />}
         >
             <Meta title={movie.title} description={movie.overview} />

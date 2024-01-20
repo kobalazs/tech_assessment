@@ -10,11 +10,12 @@ import Title from 'antd/es/typography/Title';
 const movieService = new MovieService();
 
 export default function Page() {
-  const [request, setRequest] = useState<ApiRequest>({ query: '' });
+  const [request, setRequest] = useState<ApiRequest | undefined>(undefined);
   const [response, setResponse] = useState<ApiResponse | undefined>(undefined);
 
   useEffect(() => {
     async function search() {
+      if (!request) return;
       setResponse(await movieService.search(request));
     }
     search();
@@ -27,6 +28,7 @@ export default function Page() {
   };
 
   const paginate = (page: number) => {
+    if (!request) return;
     setRequest({ ...request, page });
   };
 
@@ -45,7 +47,7 @@ export default function Page() {
           <MovieCard movie={movie} key={movie.id} />
         ))}
       </Flex>
-      <Pagination current={response?.page} total={response?.total_results} onChange={paginate} showSizeChanger={false} />
+      {response && <Pagination current={response?.page} total={response?.total_results} onChange={paginate} pageSize={20} showSizeChanger={false} />}
     </Space>
   )
 }
